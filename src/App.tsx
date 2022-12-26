@@ -1,6 +1,15 @@
 //rendering our result to the browser
 import {getAPI, postAPI} from './API' // import the api helper
 import React,  {useState} from "react";
+import { ToastContainer, toast } from 'react-toastify';
+
+export interface IUser {
+    firstname: string;
+    lastname: string;
+    email: string;
+    car: string;
+    purchasedate: string;
+}
 
 export default function App(this: any) {
     const [data, setData] = React.useState({
@@ -21,27 +30,23 @@ export default function App(this: any) {
             }
         }
     )
-    // const [
-    //     isSuccessfullySubmitted,
-    //     setIsSuccessfullySubmitted,
-    // ] = React.useState(false);
-    const submitHandler = (event: any):void => {
+    const submitForm = (event: any):void => {
         event.preventDefault();
 
         const target = event.target;
-        console.log('purchasedate', target.date.value);
-        postAPI("https://acc-test-vjn7.onrender.com/form", {
-            firstname: target.firstname.value,
+        const sendData:IUser = {firstname: target.firstname.value,
             lastname: target.lastname.value,
             email: target.email.value,
             car:target.cars.value,
             purchasedate: target.date.value
-        }).then(
+        };
+        postAPI("https://acc-test-vjn7.onrender.com/form", sendData).then(
             (res) => {
-                console.log('res', res.data)
                 if(res.status === 200){
                     setData(res.data)
-                    alert(' User data hase sent successfully')
+                    //alert(' User data hase sent successfully')
+                    toast.success("User data hase sent successfully!");
+
                 }else{
                     console.log(res)
                 }
@@ -53,8 +58,9 @@ export default function App(this: any) {
     const onDateChange = (e: any) => {
         setDateValue(e.target.value);
     };
-        return (
-        <form  onSubmit={submitHandler}>
+        // @ts-ignore
+    return (
+        <form  onSubmit={submitForm}>
 
                 {
                     data.results?.map(({id, name, email}: any) => <div key={id}>
@@ -75,5 +81,6 @@ export default function App(this: any) {
                 }
             {data.results ? <button disabled={!dateValue} type="submit" className="left-button" id="left-button">Send Data</button> : ''
             }
+            <ToastContainer style={{ width: "200px",  height:50}}/>
         </form>
     )}
