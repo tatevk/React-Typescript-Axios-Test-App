@@ -58,7 +58,7 @@ export default function App(this: any) {
     const onDateChange = (e: any) => {
         setDateValue(e.target.value);
     };
-        // @ts-ignore
+
     return (
         <form  onSubmit={submitForm}>
 
